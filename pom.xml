@@ -41,12 +41,10 @@
 
 		<!-- DEPENDENCIES -->
 		<jackson.version>2.11.1</jackson.version>
-		<commons.version>1.9.4</commons.version>
+		<commons.version>1.9.3</commons.version>
 		<logback.version>1.2.3</logback.version>
 		<slf4j.version>1.7.30</slf4j.version>
-		
-		<!-- PERSONAL -->
-		<git-commons.version>1.0.31-SNAPSHOT</git-commons.version>
+
 	</properties>
 
 	<scm>
@@ -87,11 +85,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.github.thiagolvlsantos</groupId>
-			<artifactId>git-commons</artifactId>
-			<version>${git-commons.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
@@ -102,10 +95,15 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>commons-beanutils</groupId>-->
+<!--			<artifactId>commons-beanutils</artifactId>-->
+<!--			<version>${commons.version}</version>-->
+<!--		</dependency>-->
 		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<version>${commons.version}</version>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-core</artifactId>
+			<version>5.8.13</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

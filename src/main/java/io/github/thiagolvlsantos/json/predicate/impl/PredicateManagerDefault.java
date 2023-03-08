@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import io.github.thiagolvlsantos.git.commons.properties.PropertyUtils;
 import io.github.thiagolvlsantos.json.predicate.IPredicate;
 import io.github.thiagolvlsantos.json.predicate.IPredicateManager;
+import io.github.thiagolvlsantos.json.predicate.util.PropertyUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
