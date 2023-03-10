@@ -59,8 +59,8 @@ public class TestJsonRule {
 
 
     @Test
-    public void  testEmptyData(){
-        String rule ="{\n" +
+    public void testEmptyData() {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"source\": \"weather2\"\n" +
@@ -68,7 +68,7 @@ public class TestJsonRule {
                 "  ]\n" +
                 "}";
         System.out.println(rule);
-        Map<String,Object> mapData = new HashMap<>();
+        Map<String, Object> mapData = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(mapData);
@@ -85,15 +85,15 @@ public class TestJsonRule {
                 "  ]\n" +
                 "}";
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
     }
 
     @Test
-    public void testFlatRuleMatch() throws Exception{
-        String rule="{\n" +
+    public void testFlatRuleMatch() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.state\": {\n" +
@@ -104,37 +104,42 @@ public class TestJsonRule {
                 "}";
         System.out.println(rule);
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
     }
 
 
-//    @Test
-//    public void testTreeRuleMatch() throws Exception{
-//        String rule="{\n" +
-//                "  \"$and\": [\n" +
-//                "    {\n" +
-//                "      \"status\": {\n" +
-//                "        \"state\": {\n" +
-//                "          \"$eq\": \"running\"\n" +
-//                "        }\n" +
-//                "      }\n" +
-//                "    }\n" +
-//                "  ]\n" +
-//                "}";
-//        System.out.println(rule);
-//        ObjectMapper mapper = new ObjectMapper();
-//        HashMap map =  mapper.readValue(event, HashMap.class);
-//        Predicate<Object> pred = factory.read(rule.getBytes());
-//        boolean test = pred.test(map);
-//        Assert.assertTrue(test);
-//    }
+    @Test
+    public void testTreeRuleMatchNotSupport() throws Exception {
+        String rule = "{\n" +
+                "  \"$and\": [\n" +
+                "    {\n" +
+                "      \"status\": {\n" +
+                "        \"state\": {\n" +
+                "          \"$eq\": \"running\"\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+        System.out.println(rule);
+        ObjectMapper mapper = new ObjectMapper();
+        HashMap map = mapper.readValue(event, HashMap.class);
+        boolean test = false;
+        try {
+            Predicate<Object> pred = factory.read(rule.getBytes());
+            test = pred.test(map);
+        } catch (Exception e) {
+            test = false;
+        }
+        Assert.assertFalse(test);
+    }
 
     @Test
-    public void testChineseMatch() throws Exception{
-        String rule="{\n" +
+    public void testChineseMatch() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.weatherText\": {\n" +
@@ -144,15 +149,15 @@ public class TestJsonRule {
                 "  ]\n" +
                 "}";
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
     }
 
     @Test
-    public void testNotEqChineseMatch() throws Exception{
-        String rule="{\n" +
+    public void testNotEqChineseMatch() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.weatherText\": {\n" +
@@ -162,15 +167,15 @@ public class TestJsonRule {
                 "  ]\n" +
                 "}";
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
     }
 
     @Test
-    public void testNotMatch() throws Exception{
-        String rule="{\n" +
+    public void testNotMatch() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.state\": {\n" +
@@ -184,7 +189,7 @@ public class TestJsonRule {
                 "    }\n" +
                 "  ]\n" +
                 "}";
-        String rule2 ="{\n" +
+        String rule2 = "{\n" +
                 "  \"$not\": {\n" +
                 "    \"$and\": [\n" +
                 "      {\n" +
@@ -201,19 +206,19 @@ public class TestJsonRule {
                 "  }\n" +
                 "}";
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertFalse(test);
-         //
+        //
         Predicate<Object> pred2 = factory.read(rule2.getBytes());
         boolean test2 = pred2.test(map);
         Assert.assertTrue(test2);
     }
 
     @Test
-    public void testNumberMatch() throws Exception{
-        String rule="{\n" +
+    public void testNumberMatch() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.temperature\": {\n" +
@@ -235,7 +240,7 @@ public class TestJsonRule {
                 "}";
         System.out.println(rule);
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
@@ -243,8 +248,8 @@ public class TestJsonRule {
 
 
     @Test
-    public void testNumberMatch2() throws Exception{
-        String rule="{\n" +
+    public void testNumberMatch2() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.wetness\": {\n" +
@@ -254,15 +259,15 @@ public class TestJsonRule {
                 "  ]\n" +
                 "}";
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
     }
 
     @Test
-    public void testNumberMatch3() throws Exception{
-        String rule="{\n" +
+    public void testNumberMatch3() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.wetness\": {\n" +
@@ -272,7 +277,7 @@ public class TestJsonRule {
                 "  ]\n" +
                 "}";
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
@@ -283,8 +288,8 @@ public class TestJsonRule {
      * @throws Exception
      */
     @Test
-    public void tesRegularMatch() throws Exception{
-        String rule="{\n" +
+    public void tesRegularMatch() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.weatherText\": {\n" +
@@ -294,7 +299,7 @@ public class TestJsonRule {
                 "  ]\n" +
                 "}";
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
@@ -305,8 +310,8 @@ public class TestJsonRule {
      * @throws Exception
      */
     @Test
-    public void tesRegularNotMatch() throws Exception{
-        String rule="{\n" +
+    public void tesRegularNotMatch() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.weatherText\": {\n" +
@@ -316,15 +321,15 @@ public class TestJsonRule {
                 "  ]\n" +
                 "}";
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
     }
 
     @Test
-    public void tesContainMatch() throws Exception{
-        String rule="{\n" +
+    public void tesContainMatch() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"resources\": {\n" +
@@ -334,15 +339,15 @@ public class TestJsonRule {
                 "  ]\n" +
                 "}";
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
     }
 
     @Test
-    public void tesNotContainMatch() throws Exception{
-        String rule="{\n" +
+    public void tesNotContainMatch() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"resources\": {\n" +
@@ -352,7 +357,7 @@ public class TestJsonRule {
                 "  ]\n" +
                 "}";
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
@@ -363,11 +368,11 @@ public class TestJsonRule {
      *  不支持对象包含操作
      *  不支持 in 操作
      *  不支持对象是成员操作
-      * @throws Exception
+     * @throws Exception
      */
     @Test
-    public void tesContainArrayMatch() throws Exception{
-        String rule="{\n" +
+    public void tesContainArrayMatch() throws Exception {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.list.sceneId\": {\n" +
@@ -378,7 +383,7 @@ public class TestJsonRule {
                 "}";
         System.out.println(rule);
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
@@ -386,7 +391,7 @@ public class TestJsonRule {
 
     @Test
     public void testSimpleDirectMatch() throws Exception {
-        String rule ="{\n" +
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"source\": \"weather\"\n" +
@@ -395,7 +400,7 @@ public class TestJsonRule {
                 "}";
         System.out.println(rule);
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
@@ -404,7 +409,7 @@ public class TestJsonRule {
 
     @Test
     public void testSimpleMultiattrMatch() throws Exception {
-        String rule ="{\n" +
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"source\": {\n" +
@@ -418,7 +423,7 @@ public class TestJsonRule {
                 "}";
         System.out.println(rule);
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
 
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
@@ -428,7 +433,7 @@ public class TestJsonRule {
 
     @Test
     public void testSimpleMatch3() throws Exception {
-        String rule ="{\n" +
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"source\": {\n" +
@@ -445,7 +450,7 @@ public class TestJsonRule {
                 "}";
         System.out.println(rule);
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
 
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
@@ -454,7 +459,7 @@ public class TestJsonRule {
 
     @Test
     public void testAndIncludeOrMatch() throws Exception {
-        String rule ="{\n" +
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"source\": {\n" +
@@ -479,7 +484,7 @@ public class TestJsonRule {
                 "}";
         System.out.println(rule);
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
@@ -488,7 +493,7 @@ public class TestJsonRule {
 
     @Test
     public void testOrIncludeAndMatch() throws Exception {
-        String rule ="{\n" +
+        String rule = "{\n" +
                 "  \"$or\": [\n" +
                 "    {\n" +
                 "      \"source\": {\n" +
@@ -513,55 +518,55 @@ public class TestJsonRule {
                 "}";
         System.out.println(rule);
         ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
+        HashMap map = mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
         boolean test = pred.test(map);
         Assert.assertTrue(test);
     }
 
 
-//    @Test
-//    public void testMemberOfMatch() throws Exception {
-//        String rule ="{\n" +
-//                "  \"$and\": [\n" +
-//                "    {\n" +
-//                "      \"str\": {\n" +
-//                "        \"$memberOf\": [\n" +
-//                "          \"ab\",\n" +
-//                "          \"bc\",\n" +
-//                "          \"ef\"\n" +
-//                "        ]\n" +
-//                "      }\n" +
-//                "    }\n" +
-//                "  ]\n" +
-//                "}";
-//        Predicate<Object> pred = factory.read(rule.getBytes());
-//        Map<String,Object> map = new HashMap<>(2);
-//        map.put("str","ab");
-//        boolean test = pred.test(map);
-//        Assert.assertTrue(test);
-//    }
-
-      @Test
-      public void testFlattening(){
-          String rule="{\n" +
-                  "  \"$and\": [\n" +
-                  "    {\n" +
-                  "      \"status.weatherText\": {\n" +
-                  "        \"$eq\": \"大雨啦\"\n" +
-                  "      }\n" +
-                  "    }\n" +
-                  "  ]\n" +
-                  "}";
-          Map<String, Object> map = JsonFlattener.flattenAsMap(event);
-          Predicate<Object> pred = factory.read(rule.getBytes());
-          boolean test = pred.test(map);
-          Assert.assertTrue(test);
-      }
+    @Test
+    public void testMemberOfMatch() throws Exception {
+        String rule = "{\n" +
+                "  \"$and\": [\n" +
+                "    {\n" +
+                "      \"str\": {\n" +
+                "        \"$memberOf\": [\n" +
+                "          \"ab\",\n" +
+                "          \"bc\",\n" +
+                "          \"ef\"\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+        Predicate<Object> pred = factory.read(rule.getBytes());
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("str", "ab");
+        boolean test = pred.test(map);
+        Assert.assertTrue(test);
+    }
 
     @Test
-    public void testFlattening2(){
-        String rule="{\n" +
+    public void testFlattening() {
+        String rule = "{\n" +
+                "  \"$and\": [\n" +
+                "    {\n" +
+                "      \"status.weatherText\": {\n" +
+                "        \"$eq\": \"大雨啦\"\n" +
+                "      }\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+        Map<String, Object> map = JsonFlattener.flattenAsMap(event);
+        Predicate<Object> pred = factory.read(rule.getBytes());
+        boolean test = pred.test(map);
+        Assert.assertTrue(test);
+    }
+
+    @Test
+    public void testFlattening2() {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.weatherText\": {\n" +
@@ -575,9 +580,10 @@ public class TestJsonRule {
         boolean test = pred.test(map);
         Assert.assertFalse(test);
     }
+
     @Test
-    public void testFlattening3(){
-        String rule="{\n" +
+    public void testFlattening3() {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.list[1].sceneId\": {\n" +
@@ -593,8 +599,8 @@ public class TestJsonRule {
     }
 
     @Test
-    public void testFlattening4(){
-        String rule="{\n" +
+    public void testFlattening4() {
+        String rule = "{\n" +
                 "  \"$and\": [\n" +
                 "    {\n" +
                 "      \"status.list[1].sceneId\": {\n" +
@@ -608,12 +614,5 @@ public class TestJsonRule {
         boolean test = pred.test(map);
         Assert.assertFalse(test);
     }
-
-      @Test
-      public void  test(){
-        String str = "   ";
-        System.out.println(str.trim());
-      }
-
 
 }

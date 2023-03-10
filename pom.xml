@@ -109,6 +109,7 @@
 			<groupId>com.github.wnameless.json</groupId>
 			<artifactId>json-flattener</artifactId>
 			<version>0.16.4</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
