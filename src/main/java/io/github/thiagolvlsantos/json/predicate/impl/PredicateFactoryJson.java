@@ -114,27 +114,27 @@ public class PredicateFactoryJson implements IPredicateFactory {
 	}
 
 	private void fields(String gap, List<IPredicate> result, String key, JsonNode value) {
-		//兼容此写法{"xxx":"aa"} 与 {"xxx":{"$eq":"aa"}} 等价
-		if (value.isObject()){
-			Iterator<Entry<String, JsonNode>> fs = value.fields();
-			while (fs.hasNext()) {
-				Entry<String, JsonNode> f = fs.next();
-				String op = f.getKey();
-				JsonNode va = f.getValue();
-				Class<? extends IPredicate> type = manager.get(op);
-				if (type == null) {
-					throw new JsonPredicateException("Invalid group operator: " + op + " for " + va, null);
-				}
-				if (IPredicateValue.class.isAssignableFrom(type)) {
-					fieldValue(gap, result, key, value, va, type);
-				} else {
-					throw new JsonPredicateException("Invalid group operator: " + op + " is not a value.", null);
-				}
-			}
-		}else {
+		Iterator<Entry<String, JsonNode>> fs = value.fields();
+		if (!fs.hasNext()) {
+			// TODO: replace by a rewrite engine
 			String op = "$eq";
 			Class<? extends IPredicate> type = manager.get(op);
 			JsonNode va = value;
+			if (type == null) {
+				throw new JsonPredicateException("Invalid group operator: " + op + " for " + va, null);
+			}
+			if (IPredicateValue.class.isAssignableFrom(type)) {
+				fieldValue(gap, result, key, value, va, type);
+			} else {
+				throw new JsonPredicateException("Invalid group operator: " + op + " is not a value.", null);
+			}
+			return;
+		}
+		while (fs.hasNext()) {
+			Entry<String, JsonNode> f = fs.next();
+			String op = f.getKey();
+			JsonNode va = f.getValue();
+			Class<? extends IPredicate> type = manager.get(op);
 			if (type == null) {
 				throw new JsonPredicateException("Invalid group operator: " + op + " for " + va, null);
 			}

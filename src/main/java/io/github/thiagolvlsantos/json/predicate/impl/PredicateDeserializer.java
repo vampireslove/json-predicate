@@ -10,6 +10,12 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.github.thiagolvlsantos.json.predicate.IPredicateFactory;
 import io.github.thiagolvlsantos.json.predicate.exceptions.JsonPredicateException;
 
+/**
+ * 只有测试再使用
+ * 
+ * @author luopy1
+ *
+ */
 @SuppressWarnings("serial")
 public class PredicateDeserializer extends StdDeserializer<Predicate<Object>> {
 

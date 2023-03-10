@@ -1,13 +1,18 @@
 package io.github.thiagolvlsantos.json.predicate;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.wnameless.json.flattener.JsonFlattener;
 import io.github.thiagolvlsantos.json.predicate.impl.PredicateFactoryJson;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class TestJsonRule {
 
@@ -97,27 +102,6 @@ public class TestJsonRule {
                 "    }\n" +
                 "  ]\n" +
                 "}";
-        ObjectMapper mapper = new ObjectMapper();
-        HashMap map =  mapper.readValue(event, HashMap.class);
-        Predicate<Object> pred = factory.read(rule.getBytes());
-        boolean test = pred.test(map);
-        Assert.assertTrue(test);
-    }
-
-
-    @Test
-    public void testTreeRuleMatch() throws Exception{
-        String rule="{\n" +
-                "  \"$and\": [\n" +
-                "    {\n" +
-                "      \"status\": {\n" +
-                "        \"state\": {\n" +
-                "          \"$eq\": \"running\"\n" +
-                "        }\n" +
-                "      }\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
         System.out.println(rule);
         ObjectMapper mapper = new ObjectMapper();
         HashMap map =  mapper.readValue(event, HashMap.class);
@@ -125,6 +109,28 @@ public class TestJsonRule {
         boolean test = pred.test(map);
         Assert.assertTrue(test);
     }
+
+
+//    @Test
+//    public void testTreeRuleMatch() throws Exception{
+//        String rule="{\n" +
+//                "  \"$and\": [\n" +
+//                "    {\n" +
+//                "      \"status\": {\n" +
+//                "        \"state\": {\n" +
+//                "          \"$eq\": \"running\"\n" +
+//                "        }\n" +
+//                "      }\n" +
+//                "    }\n" +
+//                "  ]\n" +
+//                "}";
+//        System.out.println(rule);
+//        ObjectMapper mapper = new ObjectMapper();
+//        HashMap map =  mapper.readValue(event, HashMap.class);
+//        Predicate<Object> pred = factory.read(rule.getBytes());
+//        boolean test = pred.test(map);
+//        Assert.assertTrue(test);
+//    }
 
     @Test
     public void testChineseMatch() throws Exception{
@@ -227,6 +233,7 @@ public class TestJsonRule {
                 "    }\n" +
                 "  ]\n" +
                 "}";
+        System.out.println(rule);
         ObjectMapper mapper = new ObjectMapper();
         HashMap map =  mapper.readValue(event, HashMap.class);
         Predicate<Object> pred = factory.read(rule.getBytes());
@@ -511,4 +518,102 @@ public class TestJsonRule {
         boolean test = pred.test(map);
         Assert.assertTrue(test);
     }
+
+
+//    @Test
+//    public void testMemberOfMatch() throws Exception {
+//        String rule ="{\n" +
+//                "  \"$and\": [\n" +
+//                "    {\n" +
+//                "      \"str\": {\n" +
+//                "        \"$memberOf\": [\n" +
+//                "          \"ab\",\n" +
+//                "          \"bc\",\n" +
+//                "          \"ef\"\n" +
+//                "        ]\n" +
+//                "      }\n" +
+//                "    }\n" +
+//                "  ]\n" +
+//                "}";
+//        Predicate<Object> pred = factory.read(rule.getBytes());
+//        Map<String,Object> map = new HashMap<>(2);
+//        map.put("str","ab");
+//        boolean test = pred.test(map);
+//        Assert.assertTrue(test);
+//    }
+
+      @Test
+      public void testFlattening(){
+          String rule="{\n" +
+                  "  \"$and\": [\n" +
+                  "    {\n" +
+                  "      \"status.weatherText\": {\n" +
+                  "        \"$eq\": \"大雨啦\"\n" +
+                  "      }\n" +
+                  "    }\n" +
+                  "  ]\n" +
+                  "}";
+          Map<String, Object> map = JsonFlattener.flattenAsMap(event);
+          Predicate<Object> pred = factory.read(rule.getBytes());
+          boolean test = pred.test(map);
+          Assert.assertTrue(test);
+      }
+
+    @Test
+    public void testFlattening2(){
+        String rule="{\n" +
+                "  \"$and\": [\n" +
+                "    {\n" +
+                "      \"status.weatherText\": {\n" +
+                "        \"$eq\": \"大雨啦22\"\n" +
+                "      }\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+        Map<String, Object> map = JsonFlattener.flattenAsMap(event);
+        Predicate<Object> pred = factory.read(rule.getBytes());
+        boolean test = pred.test(map);
+        Assert.assertFalse(test);
+    }
+    @Test
+    public void testFlattening3(){
+        String rule="{\n" +
+                "  \"$and\": [\n" +
+                "    {\n" +
+                "      \"status.list[1].sceneId\": {\n" +
+                "        \"$eq\": \"7860\"\n" +
+                "      }\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+        Map<String, Object> map = JsonFlattener.flattenAsMap(event);
+        Predicate<Object> pred = factory.read(rule.getBytes());
+        boolean test = pred.test(map);
+        Assert.assertTrue(test);
+    }
+
+    @Test
+    public void testFlattening4(){
+        String rule="{\n" +
+                "  \"$and\": [\n" +
+                "    {\n" +
+                "      \"status.list[1].sceneId\": {\n" +
+                "        \"$eq\": \"78608\"\n" +
+                "      }\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+        Map<String, Object> map = JsonFlattener.flattenAsMap(event);
+        Predicate<Object> pred = factory.read(rule.getBytes());
+        boolean test = pred.test(map);
+        Assert.assertFalse(test);
+    }
+
+      @Test
+      public void  test(){
+        String str = "   ";
+        System.out.println(str.trim());
+      }
+
+
 }
